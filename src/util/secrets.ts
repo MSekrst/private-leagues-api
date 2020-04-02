@@ -20,3 +20,5 @@ if (!MONGODB_URI) {
   }
   process.exit(1)
 }
+
+export const PORT = prod ? process.env['PORT'] : process.env['PORT_LOCAL']

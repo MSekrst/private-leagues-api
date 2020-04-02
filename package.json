@@ -1,6 +1,9 @@
 {
-  "name": "Private-Leagues-API",
+  "name": "private-leagues-api",
   "version": "1.0.0",
+  "engines": {
+    "node": "10.15.3"
+  },
   "description": "API for Private Leagues project",
   "author": "MSekrst",
   "license": "MIT",
