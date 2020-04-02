@@ -13,8 +13,8 @@ logs
 results
 tmp
 
-# Build
-public/css/main.css
+# Local database
+data
 
 # Coverage reports
 coverage
@@ -24,11 +24,9 @@ coverage
 
 # Dependency directory
 node_modules
-bower_components
 
-# Editors
+# Editor
 .idea
-*.iml
 
 # OS metadata
 .DS_Store
