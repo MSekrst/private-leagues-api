@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import path from 'path'
 
 import { userRouter } from './routes'
-import initializeDBConnection from './config/mongo'
+import initializeDBConnection from './database/mongo'
 
 // Create Express server
 const app = express()
@@ -12,8 +12,8 @@ const app = express()
 // Remove x-powered-by header
 app.disable('x-powered-by')
 
-// Connect to MongoDB
-initializeDBConnection(app)
+// Connect to database and create DB connection pool
+initializeDBConnection()
 
 // Express configuration
 app.set('port', process.env.PORT || 3000)
