@@ -27,6 +27,6 @@ app.get('/', (_req, res) => {
 })
 
 // Routes
-app.use(userRouter)
+app.use('/api', userRouter)
 
 export default app
