@@ -1,4 +1,4 @@
-import { User } from '../model/user'
+import { User } from '../model/User'
 import { getDBConnection } from './mongo'
 import { USER_COLLECTION } from './const'
 
