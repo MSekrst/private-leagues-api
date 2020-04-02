@@ -35,6 +35,7 @@ userRouter.post('/login', async (req, res) => {
   delete user.password
   user.id = user._id
   delete user._id
+  user.token = 'generated_JWT_token'
 
   res.json(user)
 })
