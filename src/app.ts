@@ -1,7 +1,7 @@
 import express from 'express'
 import compression from 'compression'
 import bodyParser from 'body-parser'
-import path from 'path'
+import cors from 'cors'
 
 import { userRouter } from './routes'
 import initializeDBConnection from './database/mongo'
@@ -16,11 +16,10 @@ app.disable('x-powered-by')
 initializeDBConnection()
 
 // Express configuration
-app.set('port', process.env.PORT || 3000)
+app.use(cors())
 app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 
 // basic response for root
 app.get('/', (_req, res) => {
