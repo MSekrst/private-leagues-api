@@ -22,3 +22,11 @@ if (!MONGODB_URI) {
 }
 
 export const PORT = prod ? process.env['PORT'] : process.env['PORT_LOCAL']
+
+export const JWT_SECRET = process.env.JWT_SECRET
+
+if (!JWT_SECRET) {
+  logger.error('No JWT Token secret. Set JWT_SECRET environment variable.')
+
+  process.exit(1)
+}

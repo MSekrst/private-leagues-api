@@ -3,10 +3,11 @@ import bcrypt from 'bcrypt'
 import { check, validationResult } from 'express-validator'
 
 import { getUsersCollection } from '../database/collections'
+import { generateToken } from '../tokens/token'
 
 const SALT_ROUNDS = 10
 
-const userRouter = Router()
+const authRouter = Router()
 
 /**
  * Checks if provided `password` contains only allowed characters. checked password is plain text.
@@ -67,7 +68,7 @@ async function findUser(username: string, password?: string) {
  *  - 422 - Credentials not provided
  *  - 404 - Wrong credentials
  */
-userRouter.post('/login', userValidators, async (req: Request, res: Response) => {
+authRouter.post('/login', userValidators, async (req: Request, res: Response) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
@@ -86,8 +87,9 @@ userRouter.post('/login', userValidators, async (req: Request, res: Response) =>
   user.id = user._id
   delete user._id
 
-  // TODO: generate real JWT
-  res.json({ user, token: 'generated_JWT_token' })
+  const token = generateToken(user)
+
+  res.json({ user, token })
 })
 
 /**
@@ -101,7 +103,7 @@ userRouter.post('/login', userValidators, async (req: Request, res: Response) =>
  *  - 409 - Username is taken
  *
  */
-userRouter.post('/register', userValidators, async (req: Request, res: Response) => {
+authRouter.post('/register', userValidators, async (req: Request, res: Response) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
@@ -126,4 +128,4 @@ userRouter.post('/register', userValidators, async (req: Request, res: Response)
   res.status(200).json({ id: insertedUser.insertedId })
 })
 
-export default userRouter
+export default authRouter

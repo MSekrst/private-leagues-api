@@ -3,7 +3,7 @@ import compression from 'compression'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-import { userRouter } from './routes'
+import apiRouter from './routes'
 import initializeDBConnection from './database/mongo'
 
 // Create Express server
@@ -27,6 +27,6 @@ app.get('/', (_req, res) => {
 })
 
 // Routes
-app.use('/api', userRouter)
+app.use('/api', apiRouter)
 
 export default app
