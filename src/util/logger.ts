@@ -9,7 +9,7 @@ const options: winston.LoggerOptions = {
     }),
     new winston.transports.File({
       level: winstonLevel,
-      filename: 'console.log',
+      filename: 'logs.log',
     }),
   ],
 }

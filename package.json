@@ -17,7 +17,8 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "test": "jest --forceExit --coverage --verbose",
+    "test": "jest --forceExit --verbose",
+    "test-coverage": "npm run test --coverage",
     "watch-test": "npm run test -- --watchAll"
   },
   "dependencies": {
@@ -36,7 +37,6 @@
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.17.1",
-    "@types/chai": "^4.2.3",
     "@types/compression": "^1.0.1",
     "@types/concurrently": "^4.1.0",
     "@types/cors": "^2.8.6",
@@ -52,7 +52,6 @@
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",
-    "chai": "^4.2.0",
     "concurrently": "^5.0.0",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
