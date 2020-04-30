@@ -10,6 +10,7 @@ API USERS
 
 - [API description](#api-description)
 - [API playground](#api-playground)
+- [API endpoints](#api-endpoints)
 
 API DEVELOPERS
 
@@ -26,6 +27,11 @@ API is secured with [JWT tokens](https://jwt.io/). Tokens secure all routes exce
 ### Authentication
 
 Majority of routes can only be accessed with valid JWT token issued on login. JWT tokens can expire. Token must be set in each request header to allow access. Bearer Authentication is used: token must be set in `Authorization` header, as `Bearer <token>` (`Authorization: Bearer <token>`).
+
+### Authorization
+
+Some resources are APP specific ans should not be available to any app. Those resources are available for requests with `X-App-Key` header set to valid `<app_key>`.
+App keys will be distributed to App developers.
 
 ## API Playground
 
@@ -48,6 +54,7 @@ When environment is picked you can send request and receive response.
 This chapter will explain how to setup and run API locally.
 
 Pre requirements:
+
 - [Node.js](https://nodejs.org/en/)
 - [NPM](https://nodejs.org/en/) or [Yarn](https://yarnpkg.com/)
 - [MongoDB](https://www.mongodb.com/download-center/community)
@@ -59,10 +66,30 @@ Once all requirements are fulfilled project can be started.
 
 1. `yarn` - install dependencies (or `npm i`)
 2. Start `mongod` if not running (make sure to add correct URI to `.env`)
-  2.1. `yarn dev-database` will start local mongo instance on port 27017 and store data in project, into `data` directory (create it manually).
+   2.1. `yarn dev-database` will start local mongo instance on port 27017 and store data in project, into `data` directory (create it manually).
 3. `yarn watch` - start node server in watch mode -> it will restart on change
-
 
 ## Available scripts
 
 Available scripts can be found in `package.json`.
+
+## API endpoints
+
+Basic list of API endpoints. `<other>` means that any fields provided will be saved.
+If response is marked as `-`, that indicates `204` response code (Ok, no content).
+
+**Note**: All routes must be prefixed with `/api`.
+
+| Endpoint       | Method | Body                              | Response          | Token | App-Key |
+| -------------- | :----: | --------------------------------- | ----------------- | :---: | :-----: |
+| `/login`       |  POST  | `{ username, password }`          | User data & token |  No   |   No    |
+| `/register`    |  POST  | `{ username, password, <other> }` | User ID           |  No   |   No    |
+| `/check-token` |  POST  | `{ token }`                       | -                 |  No   |   No    |
+| `/user/:id`    |  GET   | -                                 | Public user data  |  Yes  |   No    |
+| `/user/me`     |  GET   | -                                 | Current user data |  Yes  |   No    |
+| `/user/me`     | DELETE | -                                 | -                 |  Yes  |   No    |
+| `/user/me`     | PATCH  | `{ <any user data> }`             | -                 |  Yes  |   No    |
+| `/leagues`     |  GET   | -                                 | List of leagues   |  Yes  |   Yes   |
+| `/leagues`     |  POST  | `{ name, <other> }`               | League ID         |  Yes  |   Yes   |
+| `/leagues/:id` | PATCH  | `{ <any league data> }`           | -                 |  Yes  |   Yes   |
+| `/leagues/:id` | DELETE |                                   | -                 |  Yes  |   Yes   |

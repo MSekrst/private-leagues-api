@@ -2,11 +2,12 @@ import { Router, Request, Response } from 'express'
 import { check } from 'express-validator'
 import { ObjectID } from 'mongodb'
 
-import { findUserById, findUser } from './helpers/selectors'
 import { getUsersCollection } from '../database/collections'
 import { User } from '../model/User'
+import { findUserById, findUser } from './helpers/selectors'
 import { usernameValidator, passwordValidator, hasValidationError } from './helpers/validators'
 import { getSecuredPassword } from './helpers/password'
+import { sanitizeUser } from './helpers/sanitizers'
 
 const usersRouter = Router()
 
@@ -27,10 +28,7 @@ usersRouter.get('/me', async (req, res) => {
     return res.status(404).json({ error: 'User not found' })
   }
 
-  // user formatting is left to clients, public user data is everything except password
-  delete user.password
-  user.id = user._id
-  delete user._id
+  sanitizeUser(user)
 
   return res.status(200).json(user)
 })
@@ -55,10 +53,7 @@ usersRouter.get(
       return res.status(404).json({ error: 'Provided ID not found' })
     }
 
-    // user formatting is left to clients, public user data is everything except password
-    delete user.password
-    user.id = user._id
-    delete user._id
+    sanitizeUser(user)
 
     return res.status(200).json(user)
   }
@@ -103,15 +98,13 @@ usersRouter.delete('/me', async (req, res) => {
 usersRouter.patch('/me', async (req, res) => {
   const userMongoId = new ObjectID(req.user.id)
 
-  const usersCollection = await getUsersCollection()
-
   // forbid id update
   const partialUpdatedUserData = { ...req.body } as User
   delete partialUpdatedUserData.id
   delete partialUpdatedUserData._id
 
   if (!Object.keys(partialUpdatedUserData).length) {
-    return res.status(422).json({ error: 'ID cannot be updated' })
+    return res.status(422).json({ error: 'No fields for update' })
   }
 
   // check if new username valid and unique
@@ -147,6 +140,8 @@ usersRouter.patch('/me', async (req, res) => {
 
     partialUpdatedUserData.password = await getSecuredPassword(password)
   }
+
+  const usersCollection = await getUsersCollection()
 
   const status = await usersCollection.updateOne({ _id: userMongoId }, { $set: { ...partialUpdatedUserData } })
 

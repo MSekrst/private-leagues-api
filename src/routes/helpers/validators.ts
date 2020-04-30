@@ -1,22 +1,21 @@
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
 
+const PASSWORD_REGEX = /^[A-Za-z0-9,.\-_]*$/ // alphanumerics and special chars (,.-_)
+const USERNAME_REGEX = /^[A-Za-z0-9]*$/ // only alphanumerics
+const NAME_REGEX = /^[\w\-\s]+$/ // any valid text with spaces
+
 /**
  * Checks if provided `password` contains only allowed characters. checked password is plain text.
  *
  * @param password Checked password
  */
 export function passwordValidator(password: string) {
-  // password can contain only alphanumerics and special chars (,.-_)
-  const passwordRegex = /^[A-Za-z0-9,.\-_]*$/
-
-  const result = passwordRegex.test(password)
-
-  if (!result) {
+  if (!PASSWORD_REGEX.test(password)) {
     throw new Error('Password contains invalid characters')
   }
 
-  return result
+  return true
 }
 
 /**
@@ -25,16 +24,24 @@ export function passwordValidator(password: string) {
  * @param username Checked username
  */
 export function usernameValidator(username: string) {
-  // username can contain only alphanumerics
-  const usernameRegex = /^[A-Za-z0-9]*$/
-
-  const result = usernameRegex.test(username)
-
-  if (!result) {
+  if (!USERNAME_REGEX.test(username)) {
     throw new Error('Username contains invalid characters')
   }
 
-  return result
+  return true
+}
+
+/**
+ * Checks if name contains only allowed characters.
+ *
+ * @param name Checked name
+ */
+export function nameValidator(name: string) {
+  if (!NAME_REGEX.test(name)) {
+    throw Error('Name validation failed')
+  }
+
+  return true
 }
 
 /**

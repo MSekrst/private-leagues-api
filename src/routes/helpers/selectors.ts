@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 
-import { getUsersCollection } from '../../database/collections'
+import { getUsersCollection, getLeaguesCollection } from '../../database/collections'
 
 import { isPasswordValid } from './password'
 
@@ -44,4 +44,17 @@ export async function findUserById(id: string) {
   const user = await usersCollection.findOne({ _id: mongoId })
 
   return user
+}
+
+/**
+ * Returns list of leagues available for app with provided `appKey`.
+ * 
+ * @param appKey App key for leagues
+ */
+export async function findLeaguesByAppId(appKey: string) {
+  const leaguesCollection = await getLeaguesCollection()
+
+  const leagues = await leaguesCollection.find({ appKey }).toArray()
+
+  return leagues
 }

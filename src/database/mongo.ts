@@ -4,14 +4,15 @@ import { MONGODB_URI } from '../util/secrets'
 import logger from '../util/logger'
 import { DB_NAME } from './const'
 
-let db: Db = null
+let db: Db
+let connection: MongoClient
 
 /**
  * Opens mongod connection pool. Opened db connection will be stored as singleton and can be retrieved with `getDBConnection` function.
  * If connection cannot be opened, error will be logged and process killed!
  */
 function initializeDBConnection() {
-  const client = new MongoClient(MONGODB_URI, { useUnifiedTopology: true, poolSize: 10 })
+  connection = new MongoClient(MONGODB_URI, { useUnifiedTopology: true, poolSize: 10 })
 
   // don't create multiple connection pools
   if (db) {
@@ -19,12 +20,12 @@ function initializeDBConnection() {
   }
 
   return new Promise<Db>(resolve => {
-    client
+    connection
       .connect()
       .then(() => {
         logger.debug('MongoDB connection opened successfully')
 
-        db = client.db(DB_NAME)
+        db = connection.db(DB_NAME)
 
         resolve(db)
       })
@@ -43,6 +44,16 @@ export async function getDBConnection() {
   const openedDb = await initializeDBConnection()
 
   return openedDb
+}
+
+/**
+ * Force close mongod connection. Should not be used outside of tests.
+ */
+export async function closeDBConnection() {
+  if (connection) {
+    await connection.close()
+    db = undefined
+  }
 }
 
 export default initializeDBConnection

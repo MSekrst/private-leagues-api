@@ -4,7 +4,8 @@ import { check } from 'express-validator'
 import { passwordValidator, usernameValidator, hasValidationError } from './helpers/validators'
 import { findUser } from './helpers/selectors'
 import { getSecuredPassword } from './helpers/password'
-import { generateToken } from './helpers/token'
+import { generateToken, verifyToken } from './helpers/token'
+import { sanitizeUser } from './helpers/sanitizers'
 import { getUsersCollection } from '../database/collections'
 
 const authRouter = Router()
@@ -39,9 +40,7 @@ authRouter.post(
     }
 
     // remove unnecessary fields from user
-    delete user.password
-    user.id = user._id
-    delete user._id
+    sanitizeUser(user)
 
     const token = generateToken(user)
 
@@ -58,7 +57,6 @@ authRouter.post(
  *  - 200 - Success -> Users ID
  *  - 422 - Credentials are invalid
  *  - 409 - Username is taken
- *
  */
 authRouter.post(
   '/register',
@@ -82,5 +80,26 @@ authRouter.post(
     res.status(200).json({ id: insertedUser.insertedId })
   }
 )
+
+/**
+ * POST ~/check-token
+ *
+ * Check if provided user token is valid.
+ *
+ * Returns:
+ *  - 204 - Token is valid
+ *  - 401 - Invalid token - Unauthenticated user
+ */
+authRouter.post('/check-token', check('token').isJWT(), hasValidationError('Invalid token format'), (req, res) => {
+  const token = req.body.token
+
+  if (verifyToken(token)) {
+    return res.status(204).end()
+  }
+
+  // TODO: check tokens in DB
+
+  return res.status(401).json({ error: 'Unauthenticated user' })
+})
 
 export default authRouter

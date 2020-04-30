@@ -9,6 +9,7 @@ if (fs.existsSync('.env')) {
 
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
+export const IS_TEST = ENVIRONMENT === 'test'
 
 export const MONGODB_URI = prod ? process.env['MONGODB_URI'] : process.env['MONGODB_URI_LOCAL']
 
@@ -30,3 +31,7 @@ if (!JWT_SECRET) {
 
   process.exit(1)
 }
+
+const appKeys = process.env.APP_KEYS || ''
+
+export const APP_KEYS = appKeys.split(',')
