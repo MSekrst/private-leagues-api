@@ -12,6 +12,40 @@ import { sanitizeUser } from './helpers/sanitizers'
 const usersRouter = Router()
 
 /**
+ * GET ~/users?username=<query>
+ *
+ * Returns list of usernames and ids that match provided query. Queried username should be at least 2 chars long.
+ *
+ * Returns:
+ *  - 200 - Success -> List of username/id matches
+ *  - 404 - Query not provided
+ *  - 422 - Invalid username format
+ */
+usersRouter.get('/', async (req, res) => {
+  const searchedUsername = req.query.username
+
+  if (!searchedUsername) {
+    return res.status(404).json({ error: 'Provide username query' })
+  }
+
+  try {
+    if (searchedUsername.length < 2) {
+      throw Error
+    }
+
+    usernameValidator(searchedUsername)
+  } catch (e) {
+    return res.status(422).json({ error: 'Invalid username query' })
+  }
+
+  const usersCollection = await getUsersCollection()
+
+  const results = await usersCollection.find({ username: { $regex: new RegExp(searchedUsername, 'i') } }).toArray()
+
+  return res.status(200).json(results.map(u => ({ username: u.username, id: u._id })))
+})
+
+/**
  * GET ~/users/me
  *
  * Returns private profile for current user. User is identified by token.

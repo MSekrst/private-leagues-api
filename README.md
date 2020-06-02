@@ -80,16 +80,22 @@ If response is marked as `-`, that indicates `204` response code (Ok, no content
 
 **Note**: All routes must be prefixed with `/api`.
 
-| Endpoint       | Method | Body                              | Response          | Token | App-Key |
-| -------------- | :----: | --------------------------------- | ----------------- | :---: | :-----: |
-| `/login`       |  POST  | `{ username, password }`          | User data & token |  No   |   No    |
-| `/register`    |  POST  | `{ username, password, <other> }` | User ID           |  No   |   No    |
-| `/check-token` |  POST  | `{ token }`                       | -                 |  No   |   No    |
-| `/user/:id`    |  GET   | -                                 | Public user data  |  Yes  |   No    |
-| `/user/me`     |  GET   | -                                 | Current user data |  Yes  |   No    |
-| `/user/me`     | DELETE | -                                 | -                 |  Yes  |   No    |
-| `/user/me`     | PATCH  | `{ <any user data> }`             | -                 |  Yes  |   No    |
-| `/leagues`     |  GET   | -                                 | List of leagues   |  Yes  |   Yes   |
-| `/leagues`     |  POST  | `{ name, <other> }`               | League ID         |  Yes  |   Yes   |
-| `/leagues/:id` | PATCH  | `{ <any league data> }`           | -                 |  Yes  |   Yes   |
-| `/leagues/:id` | DELETE |                                   | -                 |  Yes  |   Yes   |
+| Endpoint                  | Method | Body                              | Response                 | Token | App-Key |
+| ------------------------- | :----: | --------------------------------- | ------------------------ | :---: | :-----: |
+| `/login`                  |  POST  | `{ username, password }`          | User data & token        |  No   |   No    |
+| `/register`               |  POST  | `{ username, password, <other> }` | User ID                  |  No   |   No    |
+| `/check-token`            |  POST  | `{ token }`                       | -                        |  No   |   No    |
+| `/users?username=<query>` |  GET   | -                                 | List of searched users   |  Yes  |   No    |
+| `/users/:id`              |  GET   | -                                 | Public user data         |  Yes  |   No    |
+| `/users/me`               |  GET   | -                                 | Current user data        |  Yes  |   No    |
+| `/users/me`               | DELETE | -                                 | -                        |  Yes  |   No    |
+| `/users/me`               | PATCH  | `{ <any user data> }`             | -                        |  Yes  |   No    |
+| `/leagues`                |  GET   | -                                 | List of leagues for user |  Yes  |   Yes   |
+| `/leagues:id`             |  GET   | -                                 | League details           |  Yes  |   Yes   |
+| `/leagues`                |  POST  | `{ name, <other> }`               | League ID                |  Yes  |   Yes   |
+| `/leagues/:id`            | PATCH  | `{ <any league data> }`           | -                        |  Yes  |   Yes   |
+| `/leagues/:id`            | DELETE | -                                 | -                        |  Yes  |   Yes   |
+| `/leagues/:id/admins`     |  POST  | `{ userId: <new_admin_user_id> }` | -                        |  Yes  |   Yes   |
+| `/leagues/:id/admins`     | DELETE | `{ userId: <admin_user_id> }`     | -                        |  Yes  |   Yes   |
+| `/leagues/:id/users`      |  POST  | `{ userId: <new_user_id> }`       | -                        |  Yes  |   Yes   |
+| `/leagues/:id/users`      | DELETE | `{ userId: <user_id> }`           | -                        |  Yes  |   Yes   |

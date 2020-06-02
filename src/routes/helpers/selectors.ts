@@ -48,13 +48,24 @@ export async function findUserById(id: string) {
 
 /**
  * Returns list of leagues available for app with provided `appKey`.
- * 
+ *  If `id` is provided returns only league with provided id.
+ *
  * @param appKey App key for leagues
+ * @param id Specific league ID
  */
-export async function findLeaguesByAppId(appKey: string) {
+export async function findLeaguesByAppId({ userId, appKey, id }: { appKey: string; userId: string; id?: string }) {
   const leaguesCollection = await getLeaguesCollection()
 
-  const leagues = await leaguesCollection.find({ appKey }).toArray()
+  const query = { appKey, $or: [{ admins: userId }, { users: userId }] } as Record<
+    string,
+    ObjectID | string | Array<{ admin: string } | { users: string }>
+  >
+
+  if (id) {
+    query._id = new ObjectID(id)
+  }
+
+  const leagues = await leaguesCollection.find(query).toArray()
 
   return leagues
 }

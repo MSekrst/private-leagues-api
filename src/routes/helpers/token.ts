@@ -7,14 +7,14 @@ import { User } from '../../model/User'
 const tokenSignOptions: SignOptions = { expiresIn: '21d', issuer: 'private-leagues-api' }
 
 /**
- * Generates valid JWT token for provided user. Token contains user profile and can be used to authenticate users.
+ * Generates valid JWT token for provided user. Token contains username and user ID and can be used to authenticate users.
  * Returns token or `null` if error ocurred.
  *
  * @param user User profile encoded in token
  */
-export function generateToken(user: User) {
+export function generateToken({ id, username }: User) {
   try {
-    const token = sign(user, JWT_SECRET, tokenSignOptions)
+    const token = sign({ id, username }, JWT_SECRET, tokenSignOptions)
 
     // TODO: implement token blacklist and storage
 
