@@ -8,6 +8,7 @@ import detailsRouter from './details'
 import adminsRouter from './admins'
 import leagueUsersRouter from './users'
 import eventsRouter from './events'
+import eventDetailsRouter from './eventDetails'
 
 const leaguesAppRouter = Router()
 
@@ -41,6 +42,14 @@ leaguesAppRouter.use(
   check('leagueId').isMongoId(),
   hasValidationError('Invalid league ID'),
   eventsRouter
+)
+leaguesAppRouter.use(
+  '/:leagueId/events/:eventId',
+  check('leagueId').isMongoId(),
+  hasValidationError('Invalid league ID'),
+  check('eventId').isMongoId(),
+  hasValidationError('Invalid event ID'),
+  eventDetailsRouter
 )
 
 export default leaguesAppRouter
